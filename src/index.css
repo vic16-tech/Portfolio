@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+
+body, #root {
+  background-color: #0f172a; /* dark navy blue */
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+   overflow-x: hidden;
+  color: #e0e7ff; /* light blue-ish for body text */
+}
+
+
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-8px);
+  }
+  40%,
+  80% {
+    transform: translateX(8px);
+  }
+}
+
+.shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+
+/* 
+@theme{
+    --breakpoint-sm:640px;
+    --breakpoint-md:768px;
+    --breakpoint-lg:1024px;
+    --breakpoint-xl:1280px;
+} */
