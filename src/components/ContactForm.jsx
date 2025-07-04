@@ -129,7 +129,7 @@ const ContactForm = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-cyan-500 hover:bg-cyan-600 text-white py-3 px-6 rounded-md flex items-center justify-center gap-3 font-semibold transition"
+          className="w-full bg-cyan-500 hover:bg-cyan-600 cursor-pointer text-white py-3 px-6 rounded-md flex items-center justify-center gap-3 font-semibold transition"
         >
           Send Message <FaPaperPlane />
         </button>

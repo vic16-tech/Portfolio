@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
 import {
@@ -13,6 +14,7 @@ import ContactForm from "../components/ContactForm";
 import BackToTopButton from "../components/BackToTopButton";
 import "../index.css";
 
+// Animation Variants
 const animationVariants = {
   fromLeft: {
     hidden: { opacity: 0, x: -100, scale: 0.8 },
@@ -37,20 +39,30 @@ const animationVariants = {
   },
 };
 
+// Animate only once
 const AnimatedOnView = ({ children, variant }) => {
   const [ref, inView] = useInView({ threshold: 0.2 });
+  const [hasBeenInView, setHasBeenInView] = useState(false);
+
+  useEffect(() => {
+    if (inView && !hasBeenInView) {
+      setHasBeenInView(true);
+    }
+  }, [inView, hasBeenInView]);
+
   return (
     <motion.div
       ref={ref}
       variants={animationVariants[variant]}
       initial="hidden"
-      animate={inView ? "visible" : "hidden"}
+      animate={hasBeenInView ? "visible" : "hidden"}
     >
       {children}
     </motion.div>
   );
 };
 
+// Tech stack icons
 const techIcons = [
   { Icon: FaHtml5, label: "HTML5" },
   { Icon: FaCss3Alt, label: "CSS3" },
@@ -67,6 +79,7 @@ const techIcons = [
   { Icon: FaFigma, label: "Figma" },
 ];
 
+// Testimonials
 const testimonials = [
   {
     name: "Sophia Adams",
@@ -86,6 +99,7 @@ const Home = () => {
   return (
     <div className="overflow-x-hidden bg-gray-900">
       <section className="text-white max-w-6xl mx-auto px-6 sm:px-12 md:px-24 flex flex-col gap-24 py-12">
+
         {/* Hero */}
         <div className="flex flex-col md:flex-row items-center justify-center gap-12">
           <AnimatedOnView variant="fromLeft">
@@ -187,7 +201,7 @@ const Home = () => {
           <AnimatedOnView variant="fromBottom">
             <h2 className="text-3xl font-bold text-cyan-400 text-center">What people say</h2>
           </AnimatedOnView>
-          <div className="flex flex-col md:flex-row gap-8 justify-center">
+          <div className="flex flex-col md:flex-row gap-8 justify-center items-center">
             {testimonials.map(({ name, feedback }, i) => (
               <AnimatedOnView key={name} variant={i % 2 ? "fromLeft" : "fromRight"}>
                 <div className="bg-white/5 p-6 rounded-xl border border-white/10 max-w-sm text-sm text-gray-200 backdrop-blur">
@@ -199,10 +213,10 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Call to action */}
+        {/* CTA */}
         <section className="mt-32 text-center bg-cyan-600 py-16 px-6 rounded-2xl shadow-lg mx-6">
           <AnimatedOnView variant="jump">
-            <h2 className="text-4xl font-bold text-white mb-6">Let’s build something wild</h2>
+            <h2 className="text-4xl font-bold text-white mb-6 cursor-pointer">Let’s build something wild</h2>
             <a
               href="/contact"
               className="inline-block mt-4 px-6 py-3 bg-white text-cyan-600 rounded-full font-semibold hover:bg-gray-100 transition-all"
