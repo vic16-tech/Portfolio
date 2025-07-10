@@ -1,4 +1,5 @@
-import { FaEnvelope, FaPhoneAlt, FaLinkedin } from "react-icons/fa";
+import { FaEnvelope, FaPhoneAlt } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6"; // Importing FaXTwitter from fa6 for the new X icon
 
 const Contact = () => {
   return (
@@ -14,9 +15,9 @@ const Contact = () => {
           <FaPhoneAlt /> <span>+234 9040237109</span>
         </div>
         <div className="flex items-center gap-3 text-gray-300 hover:text-cyan-400 transition-colors">
-          <FaLinkedin />{" "}
+          <FaXTwitter /> {/* Changed from FaLinkedin to FaXTwitter */}
           <a
-            href="x.com/achedevictor"
+            href="https://x.com/achedevictor" // Updated the link to use https://x.com
             target="_blank"
             rel="noopener noreferrer"
             className="underline"
@@ -30,4 +31,3 @@ const Contact = () => {
 };
 
 export default Contact;
-
