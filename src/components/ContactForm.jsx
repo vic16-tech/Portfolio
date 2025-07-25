@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   FaUser,
   FaEnvelope,
   FaPhone,
   FaPaperPlane,
   FaExclamationCircle,
-  FaCoffee,
+  FaCheckCircle, // Added for success message
 } from "react-icons/fa";
 import "../index.css";
 
@@ -18,32 +18,65 @@ const ContactForm = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [submitMessage, setSubmitMessage] = useState({ type: "", text: "" }); // To show success/error
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" }));
+    // Clear error for the field being typed into
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const validate = () => {
     const newErrors = {};
     if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (!formData.email.trim() || !/\S+@\S+\.\S+/.test(formData.email))
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Valid email required";
+    }
+    // Phone number is optional for mailto, but keeping validation if you want it required.
+    // If you want it optional, remove this line:
     if (!formData.number.trim()) newErrors.number = "Phone number is required";
+    // Message can be optional, no validation needed unless specified
+
     return newErrors;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setSubmitMessage({ type: "", text: "" }); // Clear previous messages
+
     const validationErrors = validate();
-    if (Object.keys(validationErrors).length) {
+    if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      setSubmitMessage({ type: "error", text: "Please correct the errors in the form." });
       return;
     }
-    // Reset form on success
-    setFormData({ name: "", email: "", number: "", message: "" });
-    setErrors({});
+
+    // --- Constructing the mailto link ---
+    const recipientEmail = "victorachede@gmail.com";
+    const subject = encodeURIComponent(`Portfolio Inquiry from ${formData.name}`);
+    const body = encodeURIComponent(
+      `Name: ${formData.name}\n` +
+      `Email: ${formData.email}\n` +
+      `Phone: ${formData.number}\n\n` +
+      `Message:\n${formData.message}`
+    );
+
+    const mailtoLink = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+
+    try {
+      window.open(mailtoLink, "_blank"); // Open email client in a new tab/window
+      setSubmitMessage({ type: "success", text: "Your email client will open with the message. Please send it from there!" });
+      setFormData({ name: "", email: "", number: "", message: "" }); // Reset form
+      setErrors({}); // Clear errors
+    } catch (error) {
+      console.error("Mailto error:", error);
+      setSubmitMessage({ type: "error", text: "Could not open email client. Please check your system settings or email victorachede@gmail.com directly." });
+    }
   };
 
   const inputStyles = (field) =>
@@ -57,9 +90,21 @@ const ContactForm = () => {
     <div className="bg-gray-900 min-h-screen p-6 transition-colors duration-500">
       <form
         onSubmit={handleSubmit}
-        className="space-y-6 max-w-xl mx-auto text-white"
+        className="space-y-6 max-w-xl mx-auto text-white p-6 rounded-lg shadow-xl bg-gray-800"
         noValidate
       >
+        <h2 className="text-3xl font-bold text-cyan-400 text-center mb-6">Get in Touch</h2>
+
+        {/* Submission Message */}
+        {submitMessage.text && (
+          <div className={`p-3 rounded-md text-center flex items-center justify-center gap-2 ${
+            submitMessage.type === "success" ? "bg-green-600 text-white" : "bg-red-600 text-white"
+          }`}>
+            {submitMessage.type === "success" ? <FaCheckCircle /> : <FaExclamationCircle />}
+            {submitMessage.text}
+          </div>
+        )}
+
         {/* Name Field */}
         <div className="relative">
           <FaUser className="absolute top-3.5 left-3 text-cyan-400" />
@@ -131,10 +176,11 @@ const ContactForm = () => {
           type="submit"
           className="w-full bg-cyan-500 hover:bg-cyan-600 cursor-pointer text-white py-3 px-6 rounded-md flex items-center justify-center gap-3 font-semibold transition"
         >
-          Send Message <FaPaperPlane />
+          Open Email Client <FaPaperPlane />
         </button>
 
-        {/* Buy Me a Coffee Button */}
+        {/* Buy Me a Coffee Button (Uncomment if you want to use it) */}
+        {/*
         <a
           href="https://www.buymeacoffee.com/victor"
           target="_blank"
@@ -143,6 +189,7 @@ const ContactForm = () => {
         >
           <FaCoffee /> Buy Me a Coffee
         </a>
+        */}
       </form>
     </div>
   );

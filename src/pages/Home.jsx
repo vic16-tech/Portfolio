@@ -10,11 +10,11 @@ import {
   SiNextdotjs, SiExpress,
 } from "react-icons/si";
 
-import ContactForm from "../components/ContactForm";
-import BackToTopButton from "../components/BackToTopButton";
-import "../index.css";
+import ContactForm from "../components/ContactForm"; // Assuming this component exists
+import BackToTopButton from "../components/BackToTopButton"; // Assuming this component exists
+import "../index.css"; // Ensure Tailwind CSS is correctly imported via this file
 
-// Animation Variants
+// --- Animation Variants (unchanged) ---
 const animationVariants = {
   fromLeft: {
     hidden: { opacity: 0, x: -100, scale: 0.8 },
@@ -39,30 +39,23 @@ const animationVariants = {
   },
 };
 
-// Animate only once
+// Animate only once (pure JSX)
 const AnimatedOnView = ({ children, variant }) => {
-  const [ref, inView] = useInView({ threshold: 0.2 });
-  const [hasBeenInView, setHasBeenInView] = useState(false);
-
-  useEffect(() => {
-    if (inView && !hasBeenInView) {
-      setHasBeenInView(true);
-    }
-  }, [inView, hasBeenInView]);
+  const [ref, inView] = useInView({ threshold: 0.2, triggerOnce: true });
 
   return (
     <motion.div
       ref={ref}
       variants={animationVariants[variant]}
       initial="hidden"
-      animate={hasBeenInView ? "visible" : "hidden"}
+      animate={inView ? "visible" : "hidden"}
     >
       {children}
     </motion.div>
   );
 };
 
-// Tech stack icons
+// Tech stack icons (unchanged)
 const techIcons = [
   { Icon: FaHtml5, label: "HTML5" },
   { Icon: FaCss3Alt, label: "CSS3" },
@@ -79,7 +72,7 @@ const techIcons = [
   { Icon: FaFigma, label: "Figma" },
 ];
 
-// Testimonials
+// Testimonials (unchanged)
 const testimonials = [
   {
     name: "Sophia Adams",
@@ -98,13 +91,14 @@ const testimonials = [
 const Home = () => {
   return (
     <div className="overflow-x-hidden bg-gray-900">
-      <section className="text-white max-w-6xl mx-auto px-6 sm:px-12 md:px-24 flex flex-col gap-24 py-12">
+      <section className="text-white max-w-6xl mx-auto px-2 sm:px-12 md:px-24 flex flex-col gap-24 py-12">
 
-        {/* Hero */}
+        {/* Hero Section */}
         <div className="flex flex-col md:flex-row items-center justify-center gap-12">
           <AnimatedOnView variant="fromLeft">
             <div className="w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-cyan-500 shadow-lg">
-              <img src="/Dev.svg" alt="Victor" className="w-full h-full object-cover" />
+              {/* Ensure Dev.svg is in your public folder or adjust path */}
+              <img src="/Dev.svg" alt="Victor" className="w-full h-full object-cover" onError={(e) => { e.currentTarget.src = "https://placehold.co/256x256/334155/FFFFFF?text=Dev+Image"; }}/>
             </div>
           </AnimatedOnView>
 
@@ -122,10 +116,22 @@ const Home = () => {
               </p>
             </AnimatedOnView>
 
+            {/* UPDATED: Online Indicator and Availability Text with Background, Rounded Borders, and Transparent Border */}
+            <AnimatedOnView variant="fromBottom">
+              <div className="flex items-center gap-2 text-green-400 font-semibold text-base sm:text-lg
+                          bg-white/5 rounded-lg border border-white/10 px-3 py-1 shadow-md backdrop-blur-sm"> {/* Added styling */}
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                </span>
+                <span>Open for Internships & Freelance</span>
+              </div>
+            </AnimatedOnView>
+
             <AnimatedOnView variant="jump">
               <a
                 href="/projects"
-                className="inline-flex items-center gap-3 px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-full font-semibold shadow-md"
+                className="inline-flex items-center gap-3 px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-full font-semibold shadow-md transition-all duration-300"
               >
                 See projects <FaArrowRight />
               </a>
@@ -138,11 +144,11 @@ const Home = () => {
           <AnimatedOnView variant="fromBottom">
             <h2 className="text-3xl font-bold text-cyan-400">Tech stack</h2>
           </AnimatedOnView>
-          <div className="flex flex-wrap justify-center gap-8 text-white/70 text-4xl">
+          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-2 gap-y-8 justify-items-center text-white/70">
             {techIcons.map(({ Icon, label }, idx) => (
-              <AnimatedOnView key={label} variant={idx % 2 ? "fromLeft" : "fromRight"}>
+              <AnimatedOnView key={label} variant={idx % 2 === 0 ? "fromLeft" : "fromRight"}>
                 <div className="flex flex-col items-center hover:text-cyan-400 transition duration-300">
-                  <Icon />
+                  <Icon className="text-3xl xs:text-4xl" />
                   <span className="text-sm mt-1">{label}</span>
                 </div>
               </AnimatedOnView>
@@ -203,7 +209,7 @@ const Home = () => {
           </AnimatedOnView>
           <div className="flex flex-col md:flex-row gap-8 justify-center items-center">
             {testimonials.map(({ name, feedback }, i) => (
-              <AnimatedOnView key={name} variant={i % 2 ? "fromLeft" : "fromRight"}>
+              <AnimatedOnView key={name} variant={i % 2 === 0 ? "fromLeft" : "fromRight"}>
                 <div className="bg-white/5 p-6 rounded-xl border border-white/10 max-w-sm text-sm text-gray-200 backdrop-blur">
                   <p>"{feedback}"</p>
                   <p className="mt-4 text-cyan-400 font-bold">— {name}</p>
@@ -219,7 +225,7 @@ const Home = () => {
             <h2 className="text-4xl font-bold text-white mb-6 cursor-pointer">Let’s build something wild</h2>
             <a
               href="/contact"
-              className="inline-block mt-4 px-6 py-3 bg-white text-cyan-600 rounded-full font-semibold hover:bg-gray-100 transition-all"
+              className="inline-block mt-4 px-6 py-3 bg-white text-cyan-600 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300"
             >
               Contact me
             </a>
