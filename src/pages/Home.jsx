@@ -12,6 +12,7 @@ import {
 
 import ContactForm from "../components/ContactForm"; // Assuming this component exists
 import BackToTopButton from "../components/BackToTopButton"; // Assuming this component exists
+import SEO from '../components/SEO'
 import "../index.css"; // Ensure Tailwind CSS is correctly imported via this file
 
 // --- Animation Variants (unchanged) ---
@@ -91,6 +92,14 @@ const testimonials = [
 const Home = () => {
   return (
     <div className="overflow-x-hidden bg-gray-900">
+      {/* ADD THIS SEO COMPONENT HERE */}
+      <SEO
+        title="Victor Achede | Fullstack Developer & Designer" // Specific title for your homepage
+        description="Victor is a passionate fullstack developer building elegant and impactful digital experiences. Specializing in React, Node.js, Firebase, and modern web design. Open for internships and freelance opportunities." // Specific description for your homepage
+        ogImage="/og.png" // Path to your OG image in public/ (e.g., /og-image.jpg)
+        ogUrl="https://portfolio-chi-sandy-8tknwzpa5s.vercel.app/" // <-- IMPORTANT: REPLACE WITH YOUR ACTUAL VERCELL LIVE URL!
+        keywords="Victor Achede, portfolio, fullstack, web developer, React, Node.js, Firebase, Tailwind CSS, UI/UX, freelance, internships, Nigeria, Asuir"
+      />
       <section className="text-white max-w-6xl mx-auto px-2 sm:px-12 md:px-24 flex flex-col gap-24 py-12">
 
         {/* Hero Section */}
