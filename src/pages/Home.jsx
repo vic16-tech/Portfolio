@@ -1,17 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState }from "react";
 import { useInView } from "react-intersection-observer";
-import { motion } from "framer-motion";
+import { motion } from "framer-motion"; // Corrected to "framer-motion"
+
 import {
   FaArrowRight, FaReact, FaNode, FaFigma, FaHtml5, FaCss3Alt,
   FaGitAlt, FaDatabase, FaUserFriends, FaBriefcase, FaStar,
 } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6"; // Corrected X (Twitter) icon import
 import {
   SiTailwindcss, SiJavascript, SiFirebase, SiMongodb,
   SiNextdotjs, SiExpress,
 } from "react-icons/si";
 
-import ContactForm from "../components/ContactForm"; // Assuming this component exists
-import BackToTopButton from "../components/BackToTopButton"; // Assuming this component exists
+import ContactForm from "../components/ContactForm";
+import BackToTopButton from "../components/BackToTopButton";
 import SEO from '../components/SEO'
 import "../index.css"; // Ensure Tailwind CSS is correctly imported via this file
 
@@ -42,7 +44,8 @@ const animationVariants = {
 
 // Animate only once (pure JSX)
 const AnimatedOnView = ({ children, variant }) => {
-  const [ref, inView] = useInView({ threshold: 0.2, triggerOnce: true });
+  // Relax threshold (0.1 means 10% visible) and temporarily disable triggerOnce
+  const [ref, inView] = useInView({ threshold: 0.1, triggerOnce: true }); // <--- MODIFIED HERE
 
   return (
     <motion.div
@@ -92,15 +95,16 @@ const testimonials = [
 const Home = () => {
   return (
     <div className="overflow-x-hidden bg-gray-900">
-      {/* ADD THIS SEO COMPONENT HERE */}
+      {/* SEO COMPONENT (unchanged) */}
       <SEO
-        title="Victor Achede | Fullstack Developer & Designer" // Specific title for your homepage
-        description="Victor is a passionate fullstack developer building elegant and impactful digital experiences. Specializing in React, Node.js, Firebase, and modern web design. Open for internships and freelance opportunities." // Specific description for your homepage
-        ogImage="/og.png" // Path to your OG image in public/ (e.g., /og-image.jpg)
-        ogUrl="https://portfolio-chi-sandy-8tknwzpa5s.vercel.app/" // <-- IMPORTANT: REPLACE WITH YOUR ACTUAL VERCELL LIVE URL!
-        keywords="Victor Achede, portfolio, fullstack, web developer, React, Node.js, Firebase, Tailwind CSS, UI/UX, freelance, internships, Nigeria, Asuir"
+        title="Victor Achede | Fullstack Developer, Designer & Founder"
+        description="Victor is a passionate fullstack developer, designer, and founder building elegant and impactful digital experiences. Specializing in React, Node.js, Firebase, and modern web design. Open for internships and freelance opportunities."
+        ogImage="/og.png"
+        ogUrl="https://victor-achede.vercel.app/"
+        keywords="Victor Achede, portfolio, fullstack, web developer, React, Node.js, Firebase, Tailwind CSS, UI/UX, freelance, internships, Nigeria, Asuir, founder, entrepreneur"
       />
-      <section className="text-white max-w-6xl mx-auto px-2 sm:px-12 md:px-24 flex flex-col gap-24 py-12">
+      {/* Base horizontal padding for smaller screens */}
+      <section className="text-white max-w-6xl mx-auto px-4 sm:px-12 md:px-24 flex flex-col gap-24 py-12">
 
         {/* Hero Section */}
         <div className="flex flex-col md:flex-row items-center justify-center gap-12">
@@ -120,20 +124,45 @@ const Home = () => {
 
             <AnimatedOnView variant="fromBottom">
               <p className="text-lg text-gray-300 leading-relaxed">
-                I’m Victor — building high-impact, elegant digital experiences. From full-stack apps to
+                I’m Victor — a <b>founder</b>  building high-impact, elegant digital experiences. From full-stack apps to
                 creative design, I build with purpose and precision.
               </p>
             </AnimatedOnView>
 
-            {/* UPDATED: Online Indicator and Availability Text with Background, Rounded Borders, and Transparent Border */}
+            {/* Online Indicator and Availability Text */}
             <AnimatedOnView variant="fromBottom">
               <div className="flex items-center gap-2 text-green-400 font-semibold text-base sm:text-lg
-                          bg-white/5 rounded-lg border border-white/10 px-3 py-1 shadow-md backdrop-blur-sm"> {/* Added styling */}
+                             bg-white/5 rounded-lg border border-white/10 px-3 py-1 shadow-md backdrop-blur-sm">
                 <span className="relative flex h-3 w-3">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
                 </span>
                 <span>Open for Internships & Freelance</span>
+              </div>
+            </AnimatedOnView>
+
+            {/* X Handles Section */}
+            <AnimatedOnView variant="fromBottom">
+              <div className="flex flex-wrap gap-4 mt-4">
+                <a
+                  href="https://x.com/KiddosNG"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-full font-semibold transition-all duration-300 text-sm"
+                >
+                  <FaXTwitter className="h-4 w-4" /> {/* Using FaXTwitter icon from fa6 */}
+                  @KiddosNG
+                </a>
+                <a
+                  href="https://x.com/caeint"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-full font-semibold transition-all duration-300 text-sm"
+                >
+                  <FaXTwitter className="h-4 w-4" /> {/* Using FaXTwitter icon from fa6 */}
+                  @caeint
+                </a>
+                {/* Add more handles here if needed */}
               </div>
             </AnimatedOnView>
 
@@ -150,17 +179,17 @@ const Home = () => {
 
         {/* Tech stack */}
         <div className="text-center space-y-10">
-          <AnimatedOnView variant="fromBottom">
+          <AnimatedOnView variant="fromBottom"> {/* <--- UNCOMMENTED AND RE-ENABLED */}
             <h2 className="text-3xl font-bold text-cyan-400">Tech stack</h2>
-          </AnimatedOnView>
-          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-2 gap-y-8 justify-items-center text-white/70">
+          </AnimatedOnView> {/* <--- UNCOMMENTED AND RE-ENABLED */}
+          {/* Increased horizontal gap for tech icons */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-8 justify-items-center text-white/70">
             {techIcons.map(({ Icon, label }, idx) => (
-              <AnimatedOnView key={label} variant={idx % 2 === 0 ? "fromLeft" : "fromRight"}>
-                <div className="flex flex-col items-center hover:text-cyan-400 transition duration-300">
-                  <Icon className="text-3xl xs:text-4xl" />
-                  <span className="text-sm mt-1">{label}</span>
-                </div>
-              </AnimatedOnView>
+              // AnimatedOnView temporarily removed from individual icons for debugging
+              <div key={label} className="flex flex-col items-center hover:text-cyan-400 transition duration-300">
+                <Icon className="text-3xl xs:text-4xl" />
+                <span className="text-sm mt-1">{label}</span>
+              </div>
             ))}
           </div>
         </div>
