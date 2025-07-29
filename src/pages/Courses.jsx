@@ -2,17 +2,19 @@
 import React, { useState, useEffect } from 'react';
 import SEO from '../components/SEO';
 import BackToTopButton from '../components/BackToTopButton';
-// C# icon import removed
 import { FaSearch, FaPython, FaJs, FaHtml5, FaCss3Alt, FaReact, FaNodeJs } from 'react-icons/fa';
-// C# icon import removed from here too
 import { SiCplusplus, SiRedux, SiMongodb, SiFirebase, SiTailwindcss, SiTypescript } from 'react-icons/si';
+import toast from 'react-hot-toast'; // Make sure this is still imported
 
 const Courses = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPlaceholderIndex, setCurrentPlaceholderIndex] = useState(0);
+  // New state for handling the bank details modal
+  const [showBankDetailsModal, setShowBankDetailsModal] = useState(false);
+  const [courseToPayFor, setCourseToPayFor] = useState(null); // Stores details of the course being paid for
 
   const keywords = [
-    "Python", "JavaScript", "C++", "HTML", "CSS", // "C#" removed from keywords
+    "Python", "JavaScript", "C++", "HTML", "CSS",
     "Redux", "Node.js", "React", "MongoDB", "SQL",
     "Tailwind CSS", "Firebase", "TypeScript", "Django", "Flask"
   ];
@@ -75,7 +77,6 @@ const Courses = () => {
       price: 32000,
       keywords: ['C++', 'Programming', 'OOP']
     },
-    // C# course object completely removed from here
     {
       id: 'mongo01',
       icon: SiMongodb,
@@ -125,10 +126,60 @@ const Courses = () => {
     return () => clearInterval(interval);
   }, [keywords.length]);
 
-  // Function to handle course selection (for now, just an alert)
-  const handleSelectCourse = (courseId, courseTitle) => {
-    alert(`You selected "${courseTitle}" (ID: ${courseId}). Confirmation will be sent to your email later!`);
-    // In a real application, you would send this data to a backend endpoint here
+  // Function to handle course selection which now initiates bank transfer process
+  const handleSelectCourse = async (course) => {
+    // 1. Store the course details and show the modal
+    setCourseToPayFor(course);
+    setShowBankDetailsModal(true);
+
+    // 2. Send an immediate notification to Victor via Formspree about the user's intent to pay via bank transfer
+    console.log(`Sending bank transfer intent via Formspree for: ${course.title} (ID: ${course.id})`);
+    try {
+        const response = await fetch('https://formspree.io/f/mpwlryll', { // Your Formspree URL
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                _subject: `Bank Transfer Payment Intent for: ${course.title}`,
+                course_title: course.title,
+                course_id: course.id,
+                message: `A visitor to your website is interested in enrolling in "${course.title}" (ID: ${course.id}) via bank transfer. Please expect payment proof to victorachede@gmail.com soon from their email.`
+            }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            console.log('Formspree Intent Response:', result.message || 'Success');
+            toast.success(`You've chosen to enroll in "${course.title}" via bank transfer. Check the pop-up for payment details!`, {
+              duration: 7000,
+              style: { background: '#4CAF50', color: '#fff' },
+              iconTheme: { primary: '#fff', secondary: '#4CAF50' },
+            });
+        } else {
+            console.error('Formspree Intent Error:', result.errors || result.message || 'Unknown error from Formspree');
+            toast.error(`Couldn't send notification about bank transfer for "${course.title}". Please try again.`, {
+              duration: 5000,
+              style: { background: '#F44336', color: '#fff' },
+              iconTheme: { primary: '#fff', secondary: '#F44336' },
+            });
+        }
+    } catch (error) {
+        console.error('Network error sending bank transfer intent:', error);
+        toast.error(`A network error occurred while preparing bank transfer for "${course.title}". Please check your internet connection.`, {
+          duration: 5000,
+          style: { background: '#FF9800', color: '#fff' },
+          iconTheme: { primary: '#fff', secondary: '#FF9800' },
+        });
+    }
+  };
+
+  // Function to close the bank details modal
+  const closeBankDetailsModal = () => {
+    setShowBankDetailsModal(false);
+    setCourseToPayFor(null); // Clear the selected course
   };
 
   return (
@@ -176,11 +227,12 @@ const Courses = () => {
                 <span className="text-white text-xl font-semibold">
                   ₦{course.price.toLocaleString()}
                 </span>
+                {/* Button to trigger the bank transfer process - REDUCED SIZE */}
                 <button
-                  onClick={() => handleSelectCourse(course.id, course.title)}
-                  className="px-5 py-2 bg-cyan-600 text-white rounded-full font-semibold hover:bg-cyan-700 transition duration-300 ease-in-out"
+                  onClick={() => handleSelectCourse(course)} // Pass the whole course object
+                  className="px-4 py-1 text-sm bg-cyan-600 text-white rounded-full font-semibold hover:bg-cyan-700 transition duration-300 ease-in-out"
                 >
-                  Select Course
+                  Enroll via Bank Transfer
                 </button>
               </div>
             </div>
@@ -198,6 +250,51 @@ const Courses = () => {
           </p>
         </div>
       </section>
+
+      {/* Bank Details Modal - Appears when showBankDetailsModal is true */}
+      {showBankDetailsModal && courseToPayFor && (
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
+              <div className="bg-gray-800 rounded-lg p-8 max-w-lg w-full text-center relative border border-gray-700">
+                  <button
+                      onClick={closeBankDetailsModal}
+                      className="absolute top-3 right-3 text-gray-400 hover:text-white text-3xl font-bold"
+                  >
+                      &times;
+                  </button>
+                  <h2 className="text-3xl font-bold text-cyan-400 mb-4">
+                      Enroll in "{courseToPayFor.title}"
+                  </h2>
+                  <p className="text-xl text-gray-300 mb-6">
+                      To enroll, please make a bank transfer of <span className="text-cyan-400 font-bold">₦{courseToPayFor.price.toLocaleString()}</span> to the account details below.
+                  </p>
+
+                  <div className="bg-gray-700 p-6 rounded-lg mb-6 text-left">
+                      <p className="text-lg text-white mb-2">
+                          <strong className="text-cyan-400">Account Name:</strong> Victor Achede 
+                      </p>
+                      <p className="text-lg text-white mb-2">
+                          <strong className="text-cyan-400">Account Number:</strong> 901 403 2807  
+                      </p>
+                      <p className="text-lg text-white">
+                          <strong className="text-cyan-400">Bank Name:</strong> PALMPAY
+                      </p>
+                  </div>
+
+                  <p className="text-gray-400 mb-6">
+                      <strong className="text-cyan-400">IMPORTANT:</strong> After making the transfer, please send a screenshot or proof of payment to:
+                      <br />
+                      <a href="mailto:victorachede@gmail.com" className="text-cyan-400 hover:underline font-semibold text-xl">victorachede@gmail.com</a>
+                  </p>
+
+                  <button
+                      onClick={closeBankDetailsModal}
+                      className="px-6 py-3 bg-cyan-600 text-white rounded-full font-semibold hover:bg-cyan-700 transition duration-300 ease-in-out"
+                  >
+                      Got It! Close
+                  </button>
+              </div>
+          </div>
+      )}
 
       <BackToTopButton />
     </div>

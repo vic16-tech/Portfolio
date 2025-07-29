@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from 'react-hot-toast'; // Import Toaster
 import Header from "./components/Header";
 import Home from "./pages/Home";
 import Blog from "./pages/Blog";
 import Projects from "./pages/Projects";
 import Contact from "./pages/Contact";
-import Courses from "./pages/Courses"
+import Courses from "./pages/Courses";
 import "./index.css";
 
 const App = () => {
@@ -20,7 +21,8 @@ const App = () => {
           <Route path="/courses" element={<Courses />} />
         </Routes>
       </main>
-      </>
+      <Toaster /> 
+    </>
   );
 };
 

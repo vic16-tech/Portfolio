@@ -17,12 +17,12 @@ const Contact = () => {
         <div className="flex items-center gap-3 text-gray-300 hover:text-cyan-400 transition-colors">
           <FaXTwitter /> {/* Changed from FaLinkedin to FaXTwitter */}
           <a
-            href="https://x.com/achedevictor" // Updated the link to use https://x.com
+            href="https://x.com/victorachede" // Updated the link to use https://x.com
             target="_blank"
             rel="noopener noreferrer"
             className="underline"
           >
-            x.com/achedevictor
+            x.com/victorachede
           </a>
         </div>
       </div>
